@@ -1,8 +1,10 @@
 
 import UrlModel from "./../backend/models/url";
+import { connectDB } from "@/backend/lib/db";
 
 export async function getServerSideProps({ params }) {
-  console.log("Slug page hit with params:", params);
+  
+  await connectDB();
 
   const { slug } = params;
 

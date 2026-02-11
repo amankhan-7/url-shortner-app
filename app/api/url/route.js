@@ -3,8 +3,11 @@ import jwt from "jsonwebtoken";
 import { cookies } from "next/headers";
 import { nanoid } from "nanoid";
 import UrlModel from "@/backend/models/url";
+import { connectDB } from "@/backend/lib/db";
 
 export async function POST(req) {
+
+  await connectDB();
   const { url } = await req.json();
 
   if (!url) {

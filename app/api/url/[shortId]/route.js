@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server";
 import UrlModel from "@/backend/models/url";
+import { connectDB } from "@/backend/lib/db";
 
 export async function GET(req, context) {
+  await connectDB();
   const { shortId } = await context.params;
 
   const result = await UrlModel.findOne({ shortId });
