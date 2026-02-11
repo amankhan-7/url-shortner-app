@@ -132,6 +132,7 @@ export default function ProfilePage() {
               Current Password
             </label>
             <input
+              placeholder="••••••••"
               type="password"
               name="currentPassword"
               value={passwords.currentPassword}
@@ -145,6 +146,7 @@ export default function ProfilePage() {
               New Password
             </label>
             <input
+              placeholder="••••••••"
               type="password"
               name="newPassword"
               value={passwords.newPassword}
@@ -158,6 +160,7 @@ export default function ProfilePage() {
               Confirm Password
             </label>
             <input
+              placeholder="••••••••"
               type="password"
               name="confirmPassword"
               value={passwords.confirmPassword}

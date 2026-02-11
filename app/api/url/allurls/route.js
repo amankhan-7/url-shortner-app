@@ -3,8 +3,10 @@ import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
 import { getUserFromToken } from "../../../../backend/lib/auth";
+import { connectDB } from "@/backend/lib/db";
 
 export async function GET() {
+  await connectDB();
   const auth = await getUserFromToken();
   if (auth.error) return auth.error;
    console.log("url fetch", auth);
@@ -15,6 +17,7 @@ export async function GET() {
 }
 
 export async function DELETE(req) {
+  await connectDB();
   const auth = await getUserFromToken();
   if (auth.error) return auth.error;
 
