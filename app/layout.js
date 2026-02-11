@@ -13,7 +13,10 @@ const geistMono = Geist_Mono({
 
 export const metadata = {
   title: "Url shortner app",
-  description: "Transform tour url into a short one",
+  description: "Transform your url into a short one",
+  icons: {
+    icon: "/url.ico", // points to public/url.ico
+  },
 };
 
 export default function RootLayout({ children }) {
@@ -21,7 +24,7 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >  
+      >
         {children}
       </body>
     </html>

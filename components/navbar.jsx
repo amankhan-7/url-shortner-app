@@ -9,11 +9,11 @@ export default function BottomNavbar() {
   const isActive = (path) => pathname === path;
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-white shadow-t-lg">
+    <nav className="fixed bottom-0 left-0 right-0 bg-white shadow-gray-800 shadow-2xl">
       <div className="flex justify-around items-center h-14">
         <Link
           href="/"
-          className={`flex flex-col items-center text-sm font-medium ${
+          className={`flex flex-col font-semibold items-center text-sm ${
             isActive("/") ? "text-indigo-500" : "text-gray-500"
           }`}
         >
