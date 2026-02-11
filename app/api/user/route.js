@@ -4,36 +4,55 @@ import User from "@/backend/models/user";
 import { connectDB } from "@/backend/lib/db";
 
 export async function POST(req) {
-  await connectDB();
-  const { email, password } = await req.json();
+  try {
+    await connectDB();
 
-  const user = await User.findOne({ email, password });
+    const { email, password } = await req.json();
 
-  if (!user) {
+    if (!email || !password) {
+      return NextResponse.json(
+        { error: "Missing fields" },
+        { status: 400 }
+      );
+    }
+
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return NextResponse.json(
+        { error: "Invalid email or password" },
+        { status: 401 }
+      );
+    }
+
+    // TODO: use bcrypt.compare here
+
+    const token = jwt.sign(
+      {
+        userId: user._id,
+        email: user.email,
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" }
+    );
+
+    const response = NextResponse.json({ success: true });
+
+    response.cookies.set("token", token, {
+      httpOnly: true,
+      path: "/",
+      sameSite: "strict",
+      secure: true, // important in production
+    });
+
+    return response;
+  } catch (error) {
+    console.error("LOGIN ERROR:", error);
+
     return NextResponse.json(
-      { error: "Invalid email or password" },
-      { status: 401 }
+      { error: "Internal server error" },
+      { status: 500 }
     );
   }
-
-  // Create JWT
-  const token = jwt.sign(
-    {
-      userId: user._id,
-      email: user.email,
-    },
-    process.env.JWT_SECRET,
-    { expiresIn: "7d" }
-  );
-
-  const response = NextResponse.json({ success: true });
-
-  //  Store JWT in cookie
-  response.cookies.set("token", token, {
-    httpOnly: true,
-    path: "/",
-    sameSite: "strict",
-  });
-
-  return response;
 }
+
