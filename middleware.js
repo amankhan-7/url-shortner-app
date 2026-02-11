@@ -1,17 +1,10 @@
 import { NextResponse } from "next/server";
 
-export function middleware(req) {
-  const { pathname } = req.nextUrl;
+export function proxy(req) {
+  const token = req.cookies.get("token")?.value;
 
-  if (pathname === "/" || "/profile") {
-    const token = req.cookies.get("token")?.value;
-    console.log(token);
-
-    if (!token) {
-      return NextResponse.redirect(
-        new URL("/login", req.url)
-      );
-    }
+  if (!token) {
+    return NextResponse.redirect(new URL("/login", req.url));
   }
 
   return NextResponse.next();
