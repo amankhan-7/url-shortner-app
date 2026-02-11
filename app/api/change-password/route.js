@@ -2,9 +2,11 @@ import { NextResponse } from "next/server";
 import mongoose from "mongoose";
 import User from "@/backend/models/user";
 import { getUserFromToken } from "../../../backend/lib/auth";
+import { connectDB } from "@/backend/lib/db";
 
 
 export async function POST(req) {
+  await connectDB();
   try {
     const { oldPassword, newPassword, confirmPassword } = await req.json();
 
@@ -71,6 +73,7 @@ export async function POST(req) {
 
 
 export async function GET() {
+  await connectDB();
   try {
     const auth = await getUserFromToken();
     if (!auth?.userId) {
