@@ -38,10 +38,10 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-slate-100 px-4">
       <div className="w-full max-w-md bg-white rounded-xl shadow-lg p-6 sm:p-8">
         <h1 className="text-2xl font-bold text-slate-800 text-center">
-          Create your account
+          Login to your account
         </h1>
         <p className="text-slate-500 text-sm text-center mt-2">
-          No nonsense. Just sign up.
+          Login in just in one go.
         </p>
 
         <form onSubmit={handleSubmit} className="mt-6 space-y-4">

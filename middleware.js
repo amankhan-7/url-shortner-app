@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 export function middleware(req) {
   const { pathname } = req.nextUrl;
 
-  if (pathname === "/") {
+  if (pathname === "/" || "/profile") {
     const token = req.cookies.get("token")?.value;
     console.log(token);
 
@@ -18,5 +18,5 @@ export function middleware(req) {
 }
 
 export const config = {
-  matcher: ["/"],
+  matcher: ["/", "/profile"],
 };

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import BottomNavbar from "@/components/navbar";
 
 export default function ProfilePage() {
@@ -82,94 +83,108 @@ export default function ProfilePage() {
     }
   }
 
-  return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4 mt-10">
-      <div className="w-full max-w-xl bg-white rounded-xl shadow-lg p-4 md:p-10 mb-20">
-        <h1 className="text-3xl font-bold text-indigo-500 mb-8 text-center">
-          Profile
-        </h1>
+  const router = useRouter();
 
-        {/* User Info */}
-        <div className="space-y-6 mb-10">
+  const handleLogout = () => {
+    // Remove auth data
+    localStorage.removeItem("token");
+
+    // Optional: clear other stored user data
+    localStorage.removeItem("user");
+
+    // Redirect to login page
+    router.push("/login");
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4 -mt-10">
+      <div className="w-full max-w-xl bg-white rounded-xl shadow-lg p-6 flex flex-col gap-5">
+        {/* Header */}
+        <div className="border-b border-gray-200 pb-4 mb-6">
+          <h1 className="text-2xl font-bold text-indigo-500 text-center">
+            Profile Settings
+          </h1>
+        </div>
+
+        {/* Readonly Info */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
           <div>
-            <label className="block text-sm font-medium text-gray-600 mb-1">
-              Name
-            </label>
-            <input
-              type="text"
-              value={user.name}
-              disabled
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-100 cursor-not-allowed"
-            />
+            <p className="text-xs font-medium text-gray-500">Full Name</p>
+            <p className="mt-1 text-sm font-semibold text-gray-800 bg-gray-50 px-3 py-2 rounded-md border border-gray-200">
+              {user.name}
+            </p>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-600 mb-1">
-              Email
-            </label>
-            <input
-              type="email"
-              value={user.email}
-              disabled
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-100 cursor-not-allowed"
-            />
+            <p className="text-xs font-medium text-gray-500">Email Address</p>
+            <p className="mt-1 text-sm font-semibold text-gray-800 bg-gray-50 px-3 py-2 rounded-md border border-gray-200">
+              {user.email}
+            </p>
           </div>
         </div>
 
         {/* Change Password */}
-        <form onSubmit={changePassword} className="space-y-6">
-          <h2 className="text-xl font-semibold text-gray-800">
+        <form onSubmit={changePassword} className="space-y-4">
+          <h2 className="text-lg font-semibold text-gray-800">
             Change Password
           </h2>
 
           <div>
-            <label className="block text-sm font-medium text-gray-600 mb-1">
+            <label className="block text-xs font-medium text-gray-600 mb-1">
               Current Password
             </label>
             <input
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-100 "
               type="password"
               name="currentPassword"
               value={passwords.currentPassword}
               onChange={handleChange}
-              placeholder="*********"
+              className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-600 mb-1">
+            <label className="block text-xs font-medium text-gray-600 mb-1">
               New Password
             </label>
             <input
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-100 "
               type="password"
               name="newPassword"
               value={passwords.newPassword}
               onChange={handleChange}
+              className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-600 mb-1">
-              Confirm New Password
+            <label className="block text-xs font-medium text-gray-600 mb-1">
+              Confirm Password
             </label>
             <input
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-100 "
               type="password"
               name="confirmPassword"
               value={passwords.confirmPassword}
               onChange={handleChange}
+              className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition"
             />
           </div>
 
           <button
             type="submit"
-            className="w-full bg-indigo-500 text-white font-semibold py-3 rounded-lg hover:bg-indigo-600 transition"
+            className="w-full bg-indigo-500 text-white text-sm font-semibold py-2 rounded-md hover:bg-indigo-600 transition cursor-pointer"
           >
             Update Password
           </button>
         </form>
+
+        <button
+          onClick={handleLogout}
+          className="px-4 py-2 text-sm font-medium border-2 bg-red-500 text-white border-red-600 rounded-md cursor-pointer"
+        >
+          Logout
+        </button>
+
       </div>
+
       <BottomNavbar />
     </div>
   );

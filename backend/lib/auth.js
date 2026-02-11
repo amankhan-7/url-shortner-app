@@ -3,7 +3,6 @@ import jwt from "jsonwebtoken";
 import { NextResponse } from "next/server";
 
 export async function getUserFromToken() {
-    console.log("AUTH FILE LOADED");
 
   const cookieStore = await cookies();
   const token = cookieStore.get("token")?.value;

@@ -27,7 +27,6 @@ export default function UrlDashboard() {
     } catch (err) {
       setError(err.message);
     }
-
   }
 
   async function deleteUrl(shortId) {
@@ -86,8 +85,8 @@ export default function UrlDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col items-center p-6">
-      <h1 className="text-3xl font-bold text-indigo-600 mb-6">
+    <div className="min-h-screen bg-gray-50 flex flex-col items-center p-6 pt-12">
+      <h1 className="text-3xl font-bold text-indigo-600 mb-6 text-center">
         URL Shortener Dashboard
       </h1>
 
@@ -103,7 +102,7 @@ export default function UrlDashboard() {
         <button
           onClick={handleShorten}
           disabled={loading}
-          className="px-4 py-2 bg-indigo-500 text-white rounded-md disabled:opacity-50"
+          className="px-4 py-2 bg-indigo-500 text-white rounded-md disabled:opacity-50 cursor-pointer"
         >
           {loading ? "Shortening..." : "Shorten"}
         </button>
@@ -112,60 +111,77 @@ export default function UrlDashboard() {
       {error && <p className="text-red-500 mb-4">{error}</p>}
 
       {/* URL Table */}
-      <div className="w-full max-w-4xl overflow-x-auto">
-        <table className="w-full table-auto border-collapse border border-gray-300">
-          <thead>
-            <tr className="bg-gray-100">
-              <th className="border px-4 py-2">Short ID</th>
-              <th className="border px-4 py-2">Short URL</th>
-              <th className="border px-4 py-2">Original URL</th>
-              <th className="border px-4 py-2">Total Clicks</th>
-              <th className="border px-4 py-2">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {urls.map((u) => (
-              <tr key={u.shortId}>
-                <td className="border px-4 py-2">{u.shortId}</td>
-                <td className="border px-4 py-2">
-                  <a
-                    href={`/${u.shortId}`} // root-level
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-indigo-600 underline"
-                  >
-                    /{u.shortId}
-                  </a>
-                </td>
-                <td className="border px-4 py-2">{u.redirectURL}</td>
-                <td className="border px-4 py-2">
-                  {u.visitHistory?.length || 0}
-                </td>
-                <td className="border px-4 py-2">
-                  <button
-                    className="bg-red-500 text-white rounded-2xl px-2 py-1 font-bold"
-                    onClick={() => deleteUrl(u.shortId)}
-                  >
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            ))}
-            {urls.length === 0 && (
+      <div className="w-full max-w-5xl bg-white rounded-xl shadow-md overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm text-left">
+            {/* Header */}
+            <thead className="bg-indigo-500 text-white text-xs uppercase tracking-wider">
               <tr>
-                <td colSpan={5} className="text-center py-4 text-gray-500">
-                  No URLs yet
-                </td>
+                <th className="px-6 py-3">Short ID</th>
+                <th className="px-6 py-3">Short URL</th>
+                <th className="px-6 py-3">Original URL</th>
+                <th className="px-6 py-3 text-center">Clicks</th>
+                <th className="px-6 py-3 text-center">Action</th>
               </tr>
-            )}
-          </tbody>
-        </table>
+            </thead>
+
+            {/* Body */}
+            <tbody className="divide-y divide-gray-200 bg-white">
+              {urls.map((u) => (
+                <tr key={u.shortId} className="hover:bg-gray-50 transition">
+                  <td className="px-6 py-4 font-medium text-gray-800">
+                    {u.shortId}
+                  </td>
+
+                  <td className="px-6 py-4">
+                    <a
+                      href={`/${u.shortId}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-indigo-600 font-medium hover:underline"
+                    >
+                      /{u.shortId}
+                    </a>
+                  </td>
+
+                  <td className="px-6 py-4 max-w-xs truncate text-gray-600">
+                    {u.redirectURL}
+                  </td>
+
+                  <td className="px-6 py-4 text-center font-semibold text-gray-700">
+                    {u.visitHistory?.length || 0}
+                  </td>
+
+                  <td className="px-6 py-4 text-center">
+                    <button
+                      onClick={() => deleteUrl(u.shortId)}
+                      className="px-4 py-1.5 text-xs font-semibold text-red-600 border border-red-500 rounded-md hover:bg-red-500 hover:text-white transition cursor-pointer"
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))}
+
+              {urls.length === 0 && (
+                <tr>
+                  <td
+                    colSpan={5}
+                    className="text-center py-10 text-gray-400 text-sm"
+                  >
+                    No URLs created yet
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
 
-      {loading && <DotsLoader/>}
+      {loading && <DotsLoader />}
 
       {/* <Spinner/> */}
-    <BottomNavbar/>
+      <BottomNavbar />
     </div>
   );
 }
