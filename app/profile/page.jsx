@@ -85,16 +85,14 @@ export default function ProfilePage() {
 
   const router = useRouter();
 
-  const handleLogout = () => {
-    // Remove auth data
-    localStorage.removeItem("token");
-
-    // Optional: clear other stored user data
-    localStorage.removeItem("user");
-
+  async function handleLogout() {
+    // fetching api that clears the cookie
+    await fetch("/api/logout", {
+      method: "POST",
+    });
     // Redirect to login page
     router.push("/login");
-  };
+  }
 
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4 -mt-10">
@@ -182,7 +180,6 @@ export default function ProfilePage() {
         >
           Logout
         </button>
-
       </div>
 
       <BottomNavbar />
