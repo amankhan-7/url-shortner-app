@@ -43,6 +43,7 @@ export async function POST(req) {
       path: "/",
       sameSite: "strict",
       secure: true, // important in production
+      maxAge: 7 * 24 * 60 * 60, // 7 days
     });
 
     return response;
