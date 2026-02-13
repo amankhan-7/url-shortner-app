@@ -5,7 +5,7 @@ import BottomNavbar from "@/components/navbar";
 import { DotsLoader } from "@/components/loading";
 import { fetchWithAuth } from "@/backend/lib/refereshToken";
 import toast from "react-hot-toast";
-
+import { Copy } from "lucide-react";
 
 export default function UrlDashboard() {
   const [urlInput, setUrlInput] = useState("");
@@ -90,18 +90,14 @@ export default function UrlDashboard() {
     }
   }
 
-const handleCopy = async (id) => {
-  try {
-    await navigator.clipboard.writeText(
-      `${window.location.origin}/${id}`
-    );
-    toast.success("Copied to clipboard");
-  } catch (err) {
-    toast.error("Failed to copy");
-  }
-};
-
-
+  const handleCopy = async (id) => {
+    try {
+      await navigator.clipboard.writeText(`${window.location.origin}/${id}`);
+      toast.success("Copied to clipboard");
+    } catch (err) {
+      toast.error("Failed to copy");
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center p-6 pt-12">
@@ -116,12 +112,12 @@ const handleCopy = async (id) => {
           placeholder="Enter long URL..."
           value={urlInput}
           onChange={(e) => setUrlInput(e.target.value)}
-          className="flex-1 px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          className="flex-1 px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 shadow-sm transition-shadow duration-200 hover:shadow-md"
         />
         <button
           onClick={handleShorten}
           disabled={loading}
-          className="px-4 py-2 bg-indigo-500 text-white rounded-md disabled:opacity-50 cursor-pointer"
+          className="px-6 py-3 bg-indigo-500 text-white font-medium rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-indigo-600 transition-colors duration-200"
         >
           {loading ? "Shortening..." : "Shorten"}
         </button>
@@ -131,11 +127,11 @@ const handleCopy = async (id) => {
 
       {/* URL Table */}
       {!loading && (
-        <div className="w-full max-w-5xl bg-white rounded-xl shadow-md overflow-hidden">
+        <div className="w-full max-w-5xl bg-white rounded-xl shadow-lg overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-sm text-left">
               {/* Header */}
-              <thead className="bg-indigo-500 text-white text-xs uppercase tracking-wider">
+              <thead className="bg-indigo-500 text-white text-xs uppercase tracking-wide">
                 <tr>
                   <th className="px-6 py-3">Short ID</th>
                   <th className="px-6 py-3">Short URL</th>
@@ -146,46 +142,52 @@ const handleCopy = async (id) => {
               </thead>
 
               {/* Body */}
-              <tbody className="divide-y divide-gray-200 bg-white">
+              <tbody className="bg-white divide-y divide-gray-200">
                 {urls.map((u) => (
-                  <tr key={u.shortId} className="hover:bg-gray-50 transition">
-                    <td className="px-6 py-4 font-medium text-gray-800">
-                       <button
-    onClick={() => handleCopy(u.shortId)}
-    className="hover:text-indigo-600 cursor-pointer"
-  >
-    {u.shortId}
-  </button>
+                  <tr
+                    key={u.shortId}
+                    className="hover:bg-gray-50 transition-colors duration-200"
+                  >
+                    {/* Short ID */}
+                    <td className="px-6 py-4 font-medium text-gray-800 flex items-center gap-2">
+                      <span>{u.shortId}</span>
+                      <button
+                        onClick={() => handleCopy(u.shortId)}
+                        className="hover:text-indigo-600 cursor-pointer transition-colors"
+                        title="Copy URL"
+                      >
+                        <Copy size={16} />
+                      </button>
                     </td>
 
+                    {/* Short URL */}
                     <td className="px-6 py-4">
                       <a
                         href={`/${u.shortId}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        onClick={() => {
-                          setTimeout(() => {
-                            fetchUrls();
-                          }, 500); // small delay so backend registers the click first
-                        }}
-                        className="text-indigo-600 font-medium hover:underline"
+                        onClick={() => setTimeout(fetchUrls, 500)}
+                        className="text-indigo-600 font-medium hover:underline transition-colors"
                       >
                         /{u.shortId}
                       </a>
                     </td>
 
+                    {/* Original URL */}
                     <td className="px-6 py-4 max-w-xs truncate text-gray-600">
                       {u.redirectURL}
                     </td>
 
+                    {/* Clicks */}
                     <td className="px-6 py-4 text-center font-semibold text-gray-700">
                       {u.visitHistory?.length || 0}
                     </td>
 
+                    {/* Action */}
                     <td className="px-6 py-4 text-center">
                       <button
                         onClick={() => deleteUrl(u.shortId)}
-                        className="px-4 py-1.5 text-xs font-semibold text-red-600 border border-red-500 rounded-md hover:bg-red-500 hover:text-white transition cursor-pointer"
+                        className="px-4 py-1.5 text-xs font-semibold text-red-600 border border-red-500 rounded-md hover:bg-red-500 hover:text-white transition-all duration-200 cursor-pointer"
                       >
                         Delete
                       </button>
@@ -193,7 +195,8 @@ const handleCopy = async (id) => {
                   </tr>
                 ))}
 
-                {urls.length === 0 && !loading && (
+                {/* Empty State */}
+                {urls.length === 0 && (
                   <tr>
                     <td
                       colSpan={5}

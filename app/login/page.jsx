@@ -16,29 +16,33 @@ export default function LoginPage() {
     e.preventDefault();
     setLoading(true);
     setError("");
+    const loadingToast = toast.loading("Logging in...");
 
-    try {
-      const res = await fetch("/api/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-        credentials: "include",
-      });
+try {
+  const res = await fetch("/api/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password }),
+    credentials: "include",
+  });
 
-      if (!res.ok) {
-        const data = await res.json();
-        setError(data.error || "Login failed");
-        setLoading(false);
-        return;
-      }
+  if (!res.ok) {
+    const data = await res.json();
+    setError(data.error || "Login failed");
+    toast.error(data.error || "Login failed", { id: loadingToast });
+    setLoading(false);
+    return;
+  }
 
-      router.push("/");
-      toast.success("Login Successful");
-    } catch (err) {
-      setError("Something went wrong");
-    } finally {
-      setLoading(false);
-    }
+  router.push("/");
+  toast.success("Login Successful", { id: loadingToast });
+} catch (err) {
+  setError("Something went wrong");
+  toast.error("Something went wrong", { id: loadingToast });
+} finally {
+  setLoading(false);
+}
+
   }
 
   return (

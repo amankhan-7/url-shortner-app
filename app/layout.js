@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "Url shortner app",
+  title: "Url Shortner",
   description: "Transform your url into a short one",
   icons: {
     icon: "/url.ico", // points to public/url.ico

@@ -14,7 +14,6 @@ export default function ProfilePage() {
   const [changing, setChanging] = useState(false);
   const [open, setOpen] = useState(false);
 
-
   const [user, setUser] = useState({
     name: "",
     email: "",
@@ -57,208 +56,79 @@ export default function ProfilePage() {
     fetchDetails();
   }, []);
 
- async function changePassword(e) {
-  e.preventDefault();
+  async function changePassword(e) {
+    e.preventDefault();
 
-  if (
-    !passwords.currentPassword ||
-    !passwords.newPassword ||
-    !passwords.confirmPassword
-  ) {
-    toast.error("All fields are required");
-    return;
-  }
-
-  if (passwords.newPassword !== passwords.confirmPassword) {
-    toast.error("New passwords do not match");
-    return;
-  }
-
-  if (passwords.newPassword.length < 8) {
-    toast.error("Password must be at least 8 characters long");
-    return;
-  }
-
-  setChanging(true);
-
-  const loadingToast = toast.loading("Updating password...");
-
-  try {
-    const res = await fetchWithAuth("/api/change-password", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        oldPassword: passwords.currentPassword,
-        newPassword: passwords.newPassword,
-        confirmPassword: passwords.confirmPassword,
-      }),
-    });
-
-    const data = await res.json();
-
-    if (!res.ok) {
-      throw new Error(data.message || "Failed to change password");
+    if (
+      !passwords.currentPassword ||
+      !passwords.newPassword ||
+      !passwords.confirmPassword
+    ) {
+      toast.error("All fields are required");
+      return;
     }
 
-    toast.success("Password updated successfully", {
-      id: loadingToast,
-    });
-
-    setPasswords({
-      currentPassword: "",
-      newPassword: "",
-      confirmPassword: "",
-    });
-
-    setOpen(false); // close dropdown after success (clean UX)
-  } catch (err) {
-    toast.error(err.message || "Something went wrong", {
-      id: loadingToast,
-    });
-  } finally {
-    setChanging(false);
-  }
-}
-async function changePassword(e) {
-  e.preventDefault();
-
-  if (
-    !passwords.currentPassword ||
-    !passwords.newPassword ||
-    !passwords.confirmPassword
-  ) {
-    toast.error("All fields are required");
-    return;
-  }
-
-  if (passwords.newPassword !== passwords.confirmPassword) {
-    toast.error("New passwords do not match");
-    return;
-  }
-
-  if (passwords.newPassword.length < 8) {
-    toast.error("Password must be at least 8 characters long");
-    return;
-  }
-
-  setChanging(true);
-
-  const loadingToast = toast.loading("Updating password...");
-
-  try {
-    const res = await fetchWithAuth("/api/change-password", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        oldPassword: passwords.currentPassword,
-        newPassword: passwords.newPassword,
-        confirmPassword: passwords.confirmPassword,
-      }),
-    });
-
-    const data = await res.json();
-
-    if (!res.ok) {
-      throw new Error(data.message || "Failed to change password");
+    if (passwords.newPassword !== passwords.confirmPassword) {
+      toast.error("New passwords do not match");
+      return;
     }
 
-    toast.success("Password updated successfully", {
-      id: loadingToast,
-    });
-
-    setPasswords({
-      currentPassword: "",
-      newPassword: "",
-      confirmPassword: "",
-    });
-
-    setOpen(false); // close dropdown after success (clean UX)
-  } catch (err) {
-    toast.error(err.message || "Something went wrong", {
-      id: loadingToast,
-    });
-  } finally {
-    setChanging(false);
-  }
-}
-
-async function changePassword(e) {
-  e.preventDefault();
-
-  if (
-    !passwords.currentPassword ||
-    !passwords.newPassword ||
-    !passwords.confirmPassword
-  ) {
-    toast.error("All fields are required");
-    return;
-  }
-
-  if (passwords.newPassword !== passwords.confirmPassword) {
-    toast.error("New passwords do not match");
-    return;
-  }
-
-  if (passwords.newPassword.length < 8) {
-    toast.error("Password must be at least 8 characters long");
-    return;
-  }
-
-  setChanging(true);
-
-  const loadingToast = toast.loading("Updating password...");
-
-  try {
-    const res = await fetchWithAuth("/api/change-password", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        oldPassword: passwords.currentPassword,
-        newPassword: passwords.newPassword,
-        confirmPassword: passwords.confirmPassword,
-      }),
-    });
-
-    const data = await res.json();
-
-    if (!res.ok) {
-      throw new Error(data.message || "Failed to change password");
+    if (passwords.newPassword.length < 8) {
+      toast.error("Password must be at least 8 characters long");
+      return;
     }
 
-    toast.success("Password updated successfully", {
-      id: loadingToast,
-    });
+    setChanging(true);
 
-    setPasswords({
-      currentPassword: "",
-      newPassword: "",
-      confirmPassword: "",
-    });
+    const loadingToast = toast.loading("Updating password...");
 
-    setOpen(false); // close dropdown after success (clean UX)
-  } catch (err) {
-    toast.error(err.message || "Something went wrong", {
-      id: loadingToast,
-    });
-  } finally {
-    setChanging(false);
+    try {
+      const res = await fetchWithAuth("/api/change-password", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          oldPassword: passwords.currentPassword,
+          newPassword: passwords.newPassword,
+          confirmPassword: passwords.confirmPassword,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message || "Failed to change password");
+      }
+
+      toast.success("Password updated successfully", {
+        id: loadingToast,
+      });
+
+      setPasswords({
+        currentPassword: "",
+        newPassword: "",
+        confirmPassword: "",
+      });
+
+      setOpen(false); // close dropdown after success (clean UX)
+    } catch (err) {
+      toast.error(err.message || "Something went wrong", {
+        id: loadingToast,
+      });
+    } finally {
+      setChanging(false);
+    }
   }
-}
 
-
-const router = useRouter();
+  const router = useRouter();
 
   async function handleLogout() {
+    const loadingToast = toast.loading("Logging out...");
     // fetching api that clears the cookie
     await fetch("/api/logout", { method: "POST" });
     router.push("/login");
-    toast.success("Logged out",);
+    toast.success("Logged out", { id: loadingToast });
   }
 
   return (
@@ -295,102 +165,101 @@ const router = useRouter();
 
         {/* Change Password */}
         {/* Change Password Dropdown */}
-<div className="border border-gray-200 rounded-lg overflow-hidden">
-  {/* Trigger */}
-  <button
-    type="button"
-    onClick={() => setOpen(!open)}
-    className="w-full flex items-center justify-between px-4 py-3 bg-gray-50 hover:bg-gray-100 transition"
-  >
-    <span className="text-sm font-semibold text-gray-800">
-      Change Password
-    </span>
-
-    <motion.div
-      animate={{ rotate: open ? 180 : 0 }}
-      transition={{ duration: 0.25 }}
-    >
-      <ChevronDown className="w-4 h-4 text-gray-600" />
-    </motion.div>
-  </button>
-
-  {/* Animated Content */}
-  <AnimatePresence initial={false}>
-    {open && (
-      <motion.div
-        key="content"
-        initial={{ height: 0, opacity: 0 }}
-        animate={{ height: "auto", opacity: 1 }}
-        exit={{ height: 0, opacity: 0 }}
-        transition={{ duration: 0.3, ease: "easeInOut" }}
-        className="overflow-hidden"
-      >
-        <form
-          onSubmit={changePassword}
-          className="px-4 py-4 space-y-4 bg-white"
-        >
-          <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1">
-              Current Password
-            </label>
-            <input
-              type="password"
-              name="currentPassword"
-              value={passwords.currentPassword}
-              onChange={handleChange}
-              placeholder="••••••••"
-              className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition"
-            />
-          </div>
-
-          <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1">
-              New Password
-            </label>
-            <input
-              type="password"
-              name="newPassword"
-              value={passwords.newPassword}
-              onChange={handleChange}
-              placeholder="••••••••"
-              className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition"
-            />
-          </div>
-
-          <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1">
-              Confirm Password
-            </label>
-            <input
-              type="password"
-              name="confirmPassword"
-              value={passwords.confirmPassword}
-              onChange={handleChange}
-              placeholder="••••••••"
-              className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition"
-            />
-          </div>
-
+        <div className="border border-gray-200 rounded-lg overflow-hidden">
+          {/* Trigger */}
           <button
-            type="submit"
-            disabled={changing}
-            className="w-full bg-indigo-500 text-white text-sm font-semibold py-2 rounded-md hover:bg-indigo-600 disabled:opacity-60 transition"
+            type="button"
+            onClick={() => setOpen(!open)}
+            className="w-full flex items-center justify-between px-4 py-3 bg-gray-50 hover:bg-gray-100 transition"
           >
-            {changing ? "Updating..." : "Update Password"}
+            <span className="text-sm font-semibold text-gray-800">
+              Change Password
+            </span>
+
+            <motion.div
+              animate={{ rotate: open ? 180 : 0 }}
+              transition={{ duration: 0.25 }}
+            >
+              <ChevronDown className="w-4 h-4 text-gray-600" />
+            </motion.div>
           </button>
-        </form>
-      </motion.div>
-    )}
-  </AnimatePresence>
-</div>
 
+          {/* Animated Content */}
+          <AnimatePresence initial={false}>
+            {open && (
+              <motion.div
+                key="content"
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: "auto", opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.3, ease: "easeInOut" }}
+                className="overflow-hidden"
+              >
+                <form
+                  onSubmit={changePassword}
+                  className="px-4 py-4 space-y-4 bg-white"
+                >
+                  <div>
+                    <label className="block text-xs font-medium text-gray-600 mb-1">
+                      Current Password
+                    </label>
+                    <input
+                      type="password"
+                      name="currentPassword"
+                      value={passwords.currentPassword}
+                      onChange={handleChange}
+                      placeholder="••••••••"
+                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition"
+                    />
+                  </div>
 
-        <button
+                  <div>
+                    <label className="block text-xs font-medium text-gray-600 mb-1">
+                      New Password
+                    </label>
+                    <input
+                      type="password"
+                      name="newPassword"
+                      value={passwords.newPassword}
+                      onChange={handleChange}
+                      placeholder="••••••••"
+                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-medium text-gray-600 mb-1">
+                      Confirm Password
+                    </label>
+                    <input
+                      type="password"
+                      name="confirmPassword"
+                      value={passwords.confirmPassword}
+                      onChange={handleChange}
+                      placeholder="••••••••"
+                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition"
+                    />
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={changing}
+                    className="w-full bg-indigo-500 text-white text-sm font-semibold py-2 rounded-full hover:bg-indigo-600 disabled:opacity-60 transition"
+                  >
+                    {changing ? "Updating..." : "Update Password"}
+                  </button>
+                </form>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+
+       {!open && <button
           onClick={handleLogout}
-          className="px-4 py-2 text-sm font-medium border-2 bg-red-500 text-white border-red-600 rounded-md cursor-pointer"
+          className="px-4 py-2 text-sm font-medium border-2 bg-red-500 text-white border-red-600 rounded-full cursor-pointer"
         >
           Logout
-        </button>
+        </button>}
       </div>
 
       <BottomNavbar />
