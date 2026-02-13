@@ -3,23 +3,32 @@ import jwt from "jsonwebtoken";
 import { NextResponse } from "next/server";
 
 export async function getUserFromToken() {
+  const cookieStore = await cookies(); // no need for await
+  const accessToken = cookieStore.get("accessToken")?.value;
 
-  const cookieStore = await cookies();
-  const token = cookieStore.get("token")?.value;
-
-  if (!token) {
+  if (!accessToken) {
     return {
-      error: NextResponse.json({ error: "Unauthorized" }, { status: 401 }),
+      error: NextResponse.json(
+        { error: "Unauthorized - No access token" },
+        { status: 401 },
+        {message: "Login required"}
+      ),
     };
   }
 
   try {
-    const payload = jwt.verify(token, process.env.JWT_SECRET);
-    return { userId: payload.userId };
-  } catch {
+    const payload = jwt.verify(
+      accessToken,
+      process.env.JWT_ACCESS_SECRET
+    );
+
+    return {
+      userId: payload.userId,
+    };
+  } catch (err) {
     return {
       error: NextResponse.json(
-        { error: "Invalid or expired token" },
+        { error: "Access token expired or invalid" },
         { status: 401 }
       ),
     };

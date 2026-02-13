@@ -3,36 +3,43 @@
 import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-    const router = useRouter();
+  const router = useRouter();
 
   async function handleSubmit(e) {
     e.preventDefault();
     setLoading(true);
     setError("");
 
-    const res = await fetch("/api/user", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-    });
+    try {
+      const res = await fetch("/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+        credentials: "include",
+      });
 
-    if (!res.ok) {
-      const data = await res.json();
-      setError(data.error);
+      if (!res.ok) {
+        const data = await res.json();
+        setError(data.error || "Login failed");
+        setLoading(false);
+        return;
+      }
+
+      router.push("/");
+      toast.success("Login Successful");
+    } catch (err) {
+      setError("Something went wrong");
+    } finally {
       setLoading(false);
-      return;
     }
-
-    router.push("/"); 
   }
-
-
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-slate-100 px-4">
@@ -85,7 +92,7 @@ export default function LoginPage() {
             className="w-full rounded-md bg-indigo-600 py-2 text-white font-semibold
                          hover:bg-indigo-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {loading ? "Signing up..." : "Sign Up"}
+            {loading ? "Logging in..." : "Login"}
           </button>
         </form>
 

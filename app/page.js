@@ -3,6 +3,9 @@
 import { useState, useEffect } from "react";
 import BottomNavbar from "@/components/navbar";
 import { DotsLoader } from "@/components/loading";
+import { fetchWithAuth } from "@/backend/lib/refereshToken";
+import toast from "react-hot-toast";
+
 
 export default function UrlDashboard() {
   const [urlInput, setUrlInput] = useState("");
@@ -21,9 +24,11 @@ export default function UrlDashboard() {
     setError("");
 
     try {
-      const res = await fetch("/api/url/allurls", { credentials: "include" });
+      const res = await fetchWithAuth("/api/url/allurls");
+
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to fetch URLs");
+
       setUrls(data.urls || []);
     } catch (err) {
       setError(err.message);
@@ -35,9 +40,8 @@ export default function UrlDashboard() {
   async function deleteUrl(shortId) {
     setLoading(true);
     try {
-      const res = await fetch(`/api/url/allurls?shortId=${shortId}`, {
+      const res = await fetchWithAuth(`/api/url/allurls?shortId=${shortId}`, {
         method: "DELETE",
-        credentials: "include",
       });
 
       const data = await res.json();
@@ -62,9 +66,8 @@ export default function UrlDashboard() {
     setError("");
 
     try {
-      const res = await fetch("/api/url", {
+      const res = await fetchWithAuth("/api/url", {
         method: "POST",
-        credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ url: urlInput }),
       });
@@ -86,6 +89,19 @@ export default function UrlDashboard() {
       setLoading(false);
     }
   }
+
+const handleCopy = async (id) => {
+  try {
+    await navigator.clipboard.writeText(
+      `${window.location.origin}/${id}`
+    );
+    toast.success("Copied to clipboard");
+  } catch (err) {
+    toast.error("Failed to copy");
+  }
+};
+
+
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center p-6 pt-12">
@@ -134,7 +150,12 @@ export default function UrlDashboard() {
                 {urls.map((u) => (
                   <tr key={u.shortId} className="hover:bg-gray-50 transition">
                     <td className="px-6 py-4 font-medium text-gray-800">
-                      {u.shortId}
+                       <button
+    onClick={() => handleCopy(u.shortId)}
+    className="hover:text-indigo-600 cursor-pointer"
+  >
+    {u.shortId}
+  </button>
                     </td>
 
                     <td className="px-6 py-4">

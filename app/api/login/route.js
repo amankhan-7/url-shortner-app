@@ -7,50 +7,32 @@ export async function POST(req) {
   try {
     await connectDB();
 
-    const { name, email, password } = await req.json();
+    const { email, password } = await req.json();
 
-    if (!name || !email || !password) {
+    if (!email || !password) {
       return NextResponse.json(
-        { error: "All fields are required" },
+        { error: "Missing fields" },
         { status: 400 }
       );
     }
 
-    if (password.length < 6) {
+    const user = await User.findOne({ email });
+
+    if (!user || user.password !== password) {
       return NextResponse.json(
-        { error: "Password must be at least 6 characters" },
-        { status: 400 }
+        { error: "Invalid email or password" },
+        { status: 401 }
       );
     }
 
-    if (!process.env.JWT_ACCESS_SECRET || !process.env.JWT_REFRESH_SECRET) {
-      throw new Error("JWT secrets are not defined");
-    }
-
-    const normalizedEmail = email.toLowerCase().trim();
-
-    const existingUser = await User.findOne({ email: normalizedEmail });
-    if (existingUser) {
-      return NextResponse.json(
-        { error: "User already exists" },
-        { status: 409 }
-      );
-    }
-
-    const user = await User.create({
-      name: name.trim(),
-      email: normalizedEmail,
-      password, // (still plain text because you chose not to use bcrypt)
-    });
-
-    // 🔑 Access Token (15m)
+    // 🔑 Access Token (15 minutes)
     const accessToken = jwt.sign(
       { userId: user._id, email: user.email },
       process.env.JWT_ACCESS_SECRET,
       { expiresIn: "15m" }
     );
 
-    // 🔁 Refresh Token (7d)
+    // 🔁 Refresh Token (7 days)
     const refreshToken = jwt.sign(
       { userId: user._id },
       process.env.JWT_REFRESH_SECRET,
@@ -61,33 +43,30 @@ export async function POST(req) {
     user.refreshToken = refreshToken;
     await user.save();
 
-    const response = NextResponse.json(
-      { success: true },
-      { status: 201 }
-    );
+    const response = NextResponse.json({ success: true, message:"user logged in successfully" } );
 
-    // Access Token Cookie
+    // Access Token cookie
     response.cookies.set("accessToken", accessToken, {
       httpOnly: true,
       sameSite: "strict",
       secure: process.env.NODE_ENV === "production",
       path: "/",
-      maxAge: 60 * 15,
+      maxAge: 60 * 15, // 15 minutes
     });
 
-    // Refresh Token Cookie
+    // Refresh Token cookie
     response.cookies.set("refreshToken", refreshToken, {
       httpOnly: true,
       sameSite: "strict",
       secure: process.env.NODE_ENV === "production",
       path: "/",
-      maxAge: 7 * 24 * 60 * 60,
+      maxAge: 7 * 24 * 60 * 60, // 7 days
     });
 
     return response;
 
   } catch (error) {
-    console.error("SIGNUP ERROR:", error);
+    console.error("LOGIN ERROR:", error);
 
     return NextResponse.json(
       { error: "Internal server error" },
